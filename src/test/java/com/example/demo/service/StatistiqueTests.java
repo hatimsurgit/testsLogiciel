@@ -5,43 +5,65 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class StatistiqueTests {
 
+    // Cas 1 : Aucune voiture (Déclenchement d'une exception)
     @Test
-    void testPrixMoyenAvecMockito() {
-        // On instancie la classe que l'on veut tester
+    void testMatriceZeroVoiture() {
         StatistiqueImpl statistique = new StatistiqueImpl();
+        
+        // On vérifie qu'une ArithmeticException est bien levée quand on fait prixMoyen()
+        assertThrows(ArithmeticException.class, () -> {
+            statistique.prixMoyen();
+        });
+    }
 
-        // On crée de fausses voitures avec Mockito (des "mocks")
-        Voiture voiture1 = mock(Voiture.class);
-        when(voiture1.getPrix()).thenReturn(10000);
+    // Cas 2 : Une seule voiture
+    @Test
+    void testMatriceUneVoiture() {
+        StatistiqueImpl statistique = new StatistiqueImpl();
+        Voiture v1 = mock(Voiture.class);
+        when(v1.getPrix()).thenReturn(15000);
+        statistique.ajouter(v1);
 
-        Voiture voiture2 = mock(Voiture.class);
-        when(voiture2.getPrix()).thenReturn(20000);
-
-        // On ajoute ces fausses voitures dans les statistiques
-        statistique.ajouter(voiture1);
-        statistique.ajouter(voiture2);
-
-        // On appelle la méthode à tester
         Echantillon resultat = statistique.prixMoyen();
+        assertEquals(1, resultat.getNombreDeVoitures());
+        assertEquals(15000, resultat.getPrixMoyen());
+    }
 
-        // On vérifie que la moyenne est correcte
+    // Cas 3 : Plusieurs voitures (Cas classique)
+    @Test
+    void testMatricePlusieursVoitures() {
+        StatistiqueImpl statistique = new StatistiqueImpl();
+        Voiture v1 = mock(Voiture.class);
+        when(v1.getPrix()).thenReturn(10000);
+        Voiture v2 = mock(Voiture.class);
+        when(v2.getPrix()).thenReturn(20000);
+        statistique.ajouter(v1);
+        statistique.ajouter(v2);
+
+        Echantillon resultat = statistique.prixMoyen();
         assertEquals(2, resultat.getNombreDeVoitures());
         assertEquals(15000, resultat.getPrixMoyen());
     }
 
+    // Cas 4 : Véhicule avec un prix de 0
     @Test
-    void testEchantillon() {
-        // Test du constructeur vide et des setters pour Echantillon
-        Echantillon e = new Echantillon();
-        e.setNombreDeVoitures(5);
-        e.setPrixMoyen(20000);
-        
-        assertEquals(5, e.getNombreDeVoitures());
-        assertEquals(20000, e.getPrixMoyen());
+    void testMatriceVoiturePrixZero() {
+        StatistiqueImpl statistique = new StatistiqueImpl();
+        Voiture v1 = mock(Voiture.class);
+        when(v1.getPrix()).thenReturn(0);
+        Voiture v2 = mock(Voiture.class);
+        when(v2.getPrix()).thenReturn(20000);
+        statistique.ajouter(v1);
+        statistique.ajouter(v2);
+
+        Echantillon resultat = statistique.prixMoyen();
+        assertEquals(2, resultat.getNombreDeVoitures());
+        assertEquals(10000, resultat.getPrixMoyen()); // (0 + 20000) / 2 = 10000
     }
 }
