@@ -13,5 +13,9 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class BaseDeDonneesTests {
 
-
+    @Test
+    void main() {
+        // Teste que la méthode principale de l'application s'exécute sans crasher
+        DemoApplication.main(new String[] {});
+    }
 }

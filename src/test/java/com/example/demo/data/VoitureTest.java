@@ -22,4 +22,16 @@ public class VoitureTest {
         assertEquals(1, voiture.getId());
     }
 
+    @Test
+    void testMethodesSupplementairesVoiture() {
+        // Test du constructeur vide et des setters
+        Voiture v = new Voiture();
+        v.setMarque("Peugeot");
+        v.setPrix(10000);
+        
+        // Test de la méthode toString
+        String chaine = v.toString();
+        assertEquals(true, chaine.contains("Peugeot"));
+    }
+
 }
