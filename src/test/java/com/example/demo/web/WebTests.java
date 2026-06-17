@@ -51,4 +51,14 @@ class WebTests {
         // 2. On vérifie que la méthode ajouter() a bien été déclenchée côté serveur
         verify(statistiqueImpl, times(1)).ajouter(any(Voiture.class));
     }
+
+    @Test
+    void testGetStatistiquesException() throws Exception {
+        // On simule le cas où il n'y a pas de voiture (ArithmeticException à cause de la division par 0)
+        when(statistiqueImpl.prixMoyen()).thenThrow(new ArithmeticException());
+
+        // On vérifie que le contrôleur renvoie bien l'erreur HTTP prévue (isBadRequest / 400)
+        mockMvc.perform(get("/statistique"))
+               .andExpect(status().isBadRequest());
+    }
 }

@@ -33,4 +33,15 @@ public class StatistiqueTests {
         assertEquals(2, resultat.getNombreDeVoitures());
         assertEquals(15000, resultat.getPrixMoyen());
     }
+
+    @Test
+    void testEchantillon() {
+        // Test du constructeur vide et des setters pour Echantillon
+        Echantillon e = new Echantillon();
+        e.setNombreDeVoitures(5);
+        e.setPrixMoyen(20000);
+        
+        assertEquals(5, e.getNombreDeVoitures());
+        assertEquals(20000, e.getPrixMoyen());
+    }
 }
