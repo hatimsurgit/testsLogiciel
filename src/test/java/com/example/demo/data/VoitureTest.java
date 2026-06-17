@@ -11,9 +11,15 @@ public class VoitureTest {
 
     @Test
     void creerVoiture(){
-        Voiture v = new Voiture("Ferrari", 2000);
-        v.setPrix(3000);
-        assertEquals(3000, v.getPrix());
+
+        // On crée la voiture
+        Voiture voiture = new Voiture("Renault", 15000);
+        voiture.setId(1);
+
+        // On vérifie que la voiture a bien enregistré les bonnes valeurs
+        assertEquals("Renault", voiture.getMarque());
+        assertEquals(15000, voiture.getPrix());
+        assertEquals(1, voiture.getId());
     }
 
 }
