@@ -21,12 +21,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class WebTests {
 
+    // On mock la logique métier pour ne tester que le contrôleur web
     @MockBean
     StatistiqueImpl statistiqueImpl;
 
     @Autowired
     MockMvc mockMvc;
 
-  
+    @Test
+    void testGetStatistiques() throws Exception {
+        // 1. On définit le comportement simulé du mock
+        when(statistiqueImpl.prixMoyen()).thenReturn(new Echantillon(3, 12000));
 
+        // 2. On simule une requête HTTP de type GET sur "/statistique"
+        mockMvc.perform(get("/statistique"))
+               .andExpect(status().isOk()) // On s'attend à un code 200 (OK)
+               .andExpect(jsonPath("$.nombreDeVoitures").value(3)) // On vérifie le JSON renvoyé
+               .andExpect(jsonPath("$.prixMoyen").value(12000));
+    }
+
+    @Test
+    void testCreerVoiture() throws Exception {
+        // 1. On simule une requête HTTP de type POST sur "/voiture" avec une voiture au format JSON
+        mockMvc.perform(post("/voiture")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content("{\"marque\":\"Peugeot\",\"prix\":15000}"))
+               .andExpect(status().isOk()); // On s'attend à un code 200 (OK)
+
+        // 2. On vérifie que la méthode ajouter() a bien été déclenchée côté serveur
+        verify(statistiqueImpl, times(1)).ajouter(any(Voiture.class));
+    }
 }
